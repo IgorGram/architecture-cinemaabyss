@@ -1,0 +1,124 @@
+
+@startuml C4_Container_Diagram
+title CinemaAbyss - Containers
+
+top to bottom direction
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!include <C4/C4_Container>
+!include DEVICONS/postgresql.puml
+
+Person(user, "", $descr="User", $tags="", $link="")
+Person(admin, "", $descr="Admin", $tags="", $link="")
+
+Container(mobileApplication, "Mobile Application", $techn="Android IOS", $descr="Мобильное приложение", $tags="", $link="")
+Container(webApplication, "Web Application", $techn="JS, Angular, React, Node.js", $descr="WEB приложение", $tags="", $link="")
+Container(smartTv, "Smart TV", $techn="Android", $descr="Приложение для smart TV", $tags="", $link="")
+Container(adminWebApplication, "Admin Web Application", $techn="JS, Angular, React, Node.js", $descr="WEB приложение для амина", $tags="", $link="")
+
+System_Boundary("CinemaAbyss_boundary", "Cinema Abyss System", $tags="") {
+    Container(CinemaAbyss.ApiGateWay, "API gateway", $techn="Spring Cloud", $descr="Единая точка входа для приложения", $tags="", $link="", $sprite="")
+
+    Container(CinemaAbyss.UserService, "User service", $techn="Spring boot", $descr="Сервис пользователей", $tags="", $link="")
+    ContainerDb(CinemaAbyss.UserService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.DeviceService, "Device service", $techn="Spring boot", $descr="Сервис устройств", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.DeviceService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.MoviesService, "Movies service", $techn="Spring boot", $descr="Сервис хранения метаданных фильмов", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.MoviesService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.RatingAndFavoriteService, "Rating and Favorite service", $techn="Spring boot", $descr="Сервис хранения избранных фильмов и оценок", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.RatingAndFavoriteService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+     Container(CinemaAbyss.HistoryService, "History service", $techn="Spring boot", $descr="Сервис истории просмотров", $tags="", $link="", $sprite="java")
+     ContainerDb(CinemaAbyss.History.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.SubscriptionService, "Subscription service", $techn="Spring boot", $descr="Сервис подписок", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.SubscriptionService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.PaymentService, "Payment service", $techn="Spring boot", $descr="Сервис платежей", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.PaymentService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.NotificationService, "Notification service", $techn="Spring boot", $descr="Сервис уведомлений", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.NotificationService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.AdminService, "Admin service", $techn="Spring boot", $descr="Сервис администрирования", $tags="", $link="", $sprite="java")
+    ContainerDb(CinemaAbyss.AdminService.Database, "", $techn="Postgres", $descr="", $tags="", $link="", $sprite="postgresql")
+
+    Container(CinemaAbyss.RecommendationInterfaceService, "Recommendation interface service", $techn="Spring boot", $descr="Сервис уведомлений", $tags="", $link="", $sprite="java")
+
+}
+
+SystemQueue_Ext(Broker, "Kafka", $descr="Брокер сообщений", $tags="", $link="")
+
+System_Ext(SmsNotificationSystem, "SMS notification system", $descr="Сервис рассылки СМС сообщений", $tags="", $link="")
+System_Ext(PushNotificationSystem, "PUSH notification system", $descr="Сервисы рассылки PUSH-уведомлений (FireBase, AppleSDK)", $tags="", $link="")
+System_Ext(EmailNotificationSystem, "E-mail system", $descr="Сервис рассылки E-mail", $tags="", $link="")
+System_Ext(RecommendationSystem, "Recommendation system", $descr="Рекомендательная система", $tags="", $link="")
+
+'--------------- DB connections
+Rel(CinemaAbyss.UserService, CinemaAbyss.UserService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.DeviceService, CinemaAbyss.DeviceService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.MoviesService, CinemaAbyss.MoviesService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.RatingAndFavoriteService, CinemaAbyss.RatingAndFavoriteService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.SubscriptionService, CinemaAbyss.SubscriptionService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.PaymentService, CinemaAbyss.PaymentService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.NotificationService, CinemaAbyss.NotificationService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.HistoryService, CinemaAbyss.History.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+Rel(CinemaAbyss.AdminService, CinemaAbyss.AdminService.Database, "CRUD-операции", $techn="SQL", $tags="", $link="")
+
+'--------------- Gateway connections
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.UserService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.DeviceService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.MoviesService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.RatingAndFavoriteService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.SubscriptionService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.PaymentService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.RecommendationInterfaceService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.HistoryService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.ApiGateWay, CinemaAbyss.AdminService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+
+'--------------- Interservice interaction
+Rel(CinemaAbyss.UserService, CinemaAbyss.DeviceService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.UserService, CinemaAbyss.MoviesService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.UserService, CinemaAbyss.RatingAndFavoriteService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.UserService, CinemaAbyss.SubscriptionService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.UserService, CinemaAbyss.PaymentService, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(CinemaAbyss.AdminService, Broker, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+
+'--------------- External connections
+Rel(user, mobileApplication, "", $techn="", $tags="", $link="")
+Rel(user, webApplication, "", $techn="", $tags="", $link="")
+Rel(user, smartTv, "", $techn="", $tags="", $link="")
+
+Rel(admin, adminWebApplication, "", $techn="", $tags="", $link="")
+
+Rel(mobileApplication, CinemaAbyss.ApiGateWay, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(webApplication, CinemaAbyss.ApiGateWay, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(smartTv, CinemaAbyss.ApiGateWay, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+Rel(adminWebApplication, CinemaAbyss.ApiGateWay, "", $techn="", $tags="", $link="")
+
+Rel(RecommendationSystem, Broker, "Очередь", $techn="", $tags="", $link="")
+Rel(Broker, RecommendationSystem, "Очередь", $techn="", $tags="", $link="")
+Rel(CinemaAbyss.HistoryService, Broker, "Очередь", $techn="", $tags="", $link="")
+Rel(CinemaAbyss.RatingAndFavoriteService, Broker, "Очередь", $techn="", $tags="", $link="")
+Rel(Broker, CinemaAbyss.RecommendationInterfaceService, "Очередь", $techn="", $tags="", $link="")
+Rel(Broker, CinemaAbyss.NotificationService, "Очередь", $techn="", $tags="", $link="")
+Rel(CinemaAbyss.NotificationService, SmsNotificationSystem, "", $techn="", $tags="", $link="")
+Rel(CinemaAbyss.NotificationService, PushNotificationSystem, "", $techn="", $tags="", $link="")
+Rel(CinemaAbyss.NotificationService, EmailNotificationSystem, "", $techn="", $tags="", $link="")
+
+
+
+
+
+
+
+
+
+'Rel(CinemaAbyss.NotificationService, smsNotificationSystem, "REST-запрос", $techn="HTTPS/JSON, SMPP", $tags="", $link="")
+'Rel(CinemaAbyss.NotificationService, pushNotificationSystem, "REST-запрос", $techn="HTTPS/JSON", $tags="", $link="")
+'Rel(CinemaAbyss.NotificationService, emailNotificationSystem, "REST-запрос", $techn="HTTPS/JSON, SMTP, IMAP", $tags="", $link="")
+
+@enduml
